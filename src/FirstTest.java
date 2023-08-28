@@ -3,7 +3,12 @@ import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 
@@ -35,6 +40,30 @@ public class FirstTest {
     @Test
     public void firstTest()
     {
-        System.out.println("First test run");
+        WebElement skip_intro=driver.findElementById("org.wikipedia:id/fragment_onboarding_skip_button");
+        skip_intro.click();
+
+        WebElement element_to_init_search=driver.findElementByXPath("//*[contains(@text,'Search Wikipedia')]");
+        element_to_init_search.click();
+
+        WebElement assertElementHasText= waitForElementPresentByXpath(
+                "//*[contains(@text,'Search Wikipedia')]",
+                "Cannot find search input"
+        );
+
+    }
+
+    private WebElement waitForElementPresentByXpath(String xpath, String error_message, long timeoutInSeconds)
+    {
+        WebDriverWait wait=new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(error_message +"\n");
+        By by = By.xpath(xpath);
+        return wait.until(
+                ExpectedConditions.presenceOfElementLocated(by)
+        );
+    }
+    private WebElement waitForElementPresentByXpath(String xpath, String error_message)
+    {
+        return waitForElementPresentByXpath(xpath,error_message, 5);
     }
 }
