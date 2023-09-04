@@ -1,9 +1,12 @@
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -36,115 +39,211 @@ public class FirstTest {
     {
         driver.quit();
     }
-//    @Test
-//    public void firstTest()
-//    {
-//        waitForElementByXpathAndClick(
-//                "//*[contains(@text,'Skip')]",
-//                "Cannot find 'Skip' label",
-//                5
-//        );
-//
-//        waitForElementByXpathAndClick(
-//                "//*[contains(@text,'Search Wikipedia')]",
-//                "Cannot find 'Search Wikipedia' input",
-//                10
-//        );
-//
-//        waitForElementByXpathAndSendKeys(
-//                "//*[contains(@text,'Search Wikipedia')]",
-//                "Java",
-//                "Cannot find search input",
-//                10
-//        );
-//
-//        waitForElementPresentByXpath(
-//                "//*[@class='android.view.ViewGroup']//*[contains(@text,'Object-oriented programming language')]",
-//                "Cannot Find 'Object-oriented programming language' topic searching by 'Java'",
-//                15
-//        );
-//
-//    }
-
     @Test
-    public void testCancelSearch()
+    public void firstTest()
     {
-        waitForElementByIdAndClick(
-                "org.wikipedia:id/fragment_onboarding_skip_button",
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Skip')]"),
                 "Cannot find 'Skip' label",
-                10
-        );
-        waitForElementByIdAndClick(
-                "org.wikipedia:id/search_container",
-                "Cannot find 'Search Wikipedia' input",
                 5
         );
-        waitForElementByXpathAndSendKeys(
-                "//*[contains(@text,'Search Wikipedia')]",
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                10
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
                 "Java",
                 "Cannot find search input",
                 10
         );
-        waitForElementByIdAndClick(
-                "org.wikipedia:id/search_close_btn",
-                "Cannot find X to cancel search",
+
+        waitForElementPresent(
+                By.xpath("//*[@class='android.view.ViewGroup']//*[contains(@text,'Object-oriented programming language')]"),
+                "Cannot Find 'Object-oriented programming language' topic searching by 'Java'",
+                15
+        );
+
+    }
+
+    @Test
+    public void testCancelSearch()
+    {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/fragment_onboarding_skip_button"),
+                "Cannot find 'Skip' label",
+                10
+        );
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
                 5
         );
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Java",
+                "Cannot find search input",
+                10
+        );
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Cannot find search field",
+                10
+
+        );
+
+//        waitForElementAndClick(
+//                By.id("org.wikipedia:id/search_close_btn"),
+//                "Cannot find X to cancel search",
+//                5
+//        );
         waitFOrElementNotPresented(
-                "org.wikipedia:id/search_close_btn",
+                By.id("org.wikipedia:id/search_close_btn"),
                 "X is still present on the page",
                 5
 
         );
     }
 
-    private WebElement waitForElementPresentByXpath(String xpath, String error_message, long timeoutInSeconds)
+    @Test
+    public void testCompareArticleTitle()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Skip')]"),
+                "Cannot find 'Skip' label",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                10
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Java",
+                "Cannot find search input",
+                10
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@class='android.view.ViewGroup']//*[contains(@text,'Object-oriented programming language')]"),
+                "Cannot find 'Search Wikipedia' input",
+                10
+        );
+        WebElement subtitle_element= waitForElementPresent(
+                By.id("pcs-edit-section-title-description"),
+                "Cannot find Subtitle description",
+                15
+        );
+
+        String article_subtitle = subtitle_element.getAttribute("text");
+
+        Assert.assertEquals(
+                "We see unexpected subtitle",
+                "Object-oriented programming language",
+                article_subtitle
+        );
+    }
+
+    @Test
+    public void testSwipeArticle()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Skip')]"),
+                "Cannot find 'Skip' label",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                10
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Appium",
+                "Cannot find search input",
+                10
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@class='android.widget.TextView']//*[contains(@text,'Automation for Apps')]"),
+                "Cannot find 'Search Wikipedia' input",
+                10
+        );
+        waitForElementPresent(
+                By.xpath("//*[contains(@text, 'Appium')]"),
+                "Cannot find Title",
+                15
+        );
+        swipeUpToFindElement(
+                By.xpath("//*[@text='View article in browser']"),
+                "Test error msg"
+        );
+    }
+
+    private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait=new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message +"\n");
-        By by = By.xpath(xpath);
         return wait.until(
                 ExpectedConditions.presenceOfElementLocated(by)
         );
     }
-    private WebElement waitForElementPresentByXpath(String xpath, String error_message)
+    private WebElement waitForElementPresent(By by, String error_message)
     {
-        return waitForElementPresentByXpath(xpath,error_message, 5);
+        return waitForElementPresent(by,error_message, 5);
     }
-    private WebElement waitForElementByXpathAndClick(String xpath, String error_message, long timeoutInSeconds)
+    private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds)
     {
-        WebElement element = waitForElementPresentByXpath(xpath,error_message, 5);
+        WebElement element = waitForElementPresent(by,error_message, 5);
         element.click();
         return element;
     }
-    private WebElement waitForElementByXpathAndSendKeys(String xpath, String value, String error_message, long timeoutInSeconds)
+    private WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSeconds)
     {
-        WebElement element = waitForElementPresentByXpath(xpath,error_message, 5);
+        WebElement element = waitForElementPresent(by,error_message, 5);
         element.sendKeys(value);
         return element;
     }
-    private WebElement waitForElementPresentById(String id, String error_message, long timeoutInSeconds)
-    {
-        WebDriverWait wait=new WebDriverWait(driver, timeoutInSeconds);
-        wait.withMessage(error_message +"\n");
-        By by = By.id(id);
-        return wait.until(
-                ExpectedConditions.presenceOfElementLocated(by)
-        );
-    }
-    private WebElement waitForElementByIdAndClick(String id, String error_message, long timeoutInSeconds)
-    {
-        WebElement element = waitForElementPresentById(id,error_message, 5);
-        element.click();
-        return element;
-    }
-    private boolean waitFOrElementNotPresented(String id, String error_message, long timeoutInSeconds)
+
+    private boolean waitFOrElementNotPresented(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait=new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message+"\n");
-        By by=By.id(id);
         return wait.until(
                 ExpectedConditions.invisibilityOfElementLocated(by)
         );
+    }
+
+    private WebElement waitForElementAndClear (By by, String error_message, long timeoutInSeconds)
+    {
+        WebElement element= waitForElementPresent(by, error_message, timeoutInSeconds);
+        element.clear();
+        return element;
+    }
+    protected void swipeUp(int timeOfSwipe)
+    {
+        TouchAction action = new TouchAction(driver);
+        Dimension size = driver.manage().window().getSize();
+        int x = size.width /2;
+        int start_y = (int) (size.height * 0.5);
+        int end_y = (int) (size.height * 0.2);
+        action.press(x, start_y).waitAction(timeOfSwipe).moveTo(x, end_y).release().perform();
+    }
+    protected void swipeUpQuick()
+    {
+        swipeUp(200);
+    }
+    protected void swipeUpToFindElement(By by, String error_message)
+    {
+        while (driver.findElements(by).size()==0){
+            swipeUpQuick();
+        }
+
     }
 }
