@@ -170,9 +170,10 @@ public class FirstTest {
                 "Cannot find search input",
                 10
         );
+
         waitForElementAndClick(
-                By.xpath("//*[@class='android.widget.TextView']//*[contains(@text,'Automation for Apps')]"),
-                "Cannot find 'Search Wikipedia' input",
+                By.xpath("//*[@class='android.view.ViewGroup']//*[contains(@text,'Automation for Apps')]"),
+                "Cannot find 'Automation for Apps' article description",
                 10
         );
         waitForElementPresent(
@@ -182,7 +183,8 @@ public class FirstTest {
         );
         swipeUpToFindElement(
                 By.xpath("//*[@text='View article in browser']"),
-                "Test error msg"
+                "Cannot find the end of the article",
+                20
         );
     }
 
@@ -239,10 +241,17 @@ public class FirstTest {
     {
         swipeUp(200);
     }
-    protected void swipeUpToFindElement(By by, String error_message)
+    protected void swipeUpToFindElement(By by, String error_message, int max_swipes)
     {
+        int already_swiped = 0;
         while (driver.findElements(by).size()==0){
+
+            if (already_swiped > max_swipes){
+                waitForElementPresent(by, "Cannot find element by swiping up. \n"+ error_message, 0);
+                return;
+            }
             swipeUpQuick();
+            ++already_swiped;
         }
 
     }
