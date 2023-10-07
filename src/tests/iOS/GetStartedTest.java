@@ -11,6 +11,7 @@ public class GetStartedTest extends iOSTestCase {
         WelcomePageObject WelcomePage = new WelcomePageObject(driver);
 
         WelcomePage.waitForLearnMoreLink();
+//        WelcomePage.clickSkipButton();
         WelcomePage.clickNextButton();
 
         WelcomePage.waitForNewWaysToExploreText();
