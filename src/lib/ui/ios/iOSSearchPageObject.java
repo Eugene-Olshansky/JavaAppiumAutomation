@@ -6,8 +6,8 @@ import lib.ui.SearchPageObject;
 public class iOSSearchPageObject extends SearchPageObject
 {
     static {
-        SKIP_ONBOARDING = "xpath://XCUIElementTypeButton[@name='Skip']";
-        SEARCH_INIT_ELEMENT = "xpath://XCUIElementTypeSearchField[@name='Search Wikipedia']";
+        SKIP_ONBOARDING = "xpath://XCUIElementTypeButton[@name=\"Skip\"]";
+        SEARCH_INIT_ELEMENT = "id:Search Wikipedia";
         SEARCH_INPUT = "xpath://XCUIElementTypeSearchField[@name='Search Wikipedia']";
 //        SEARCH_FIELD_WITH_REQUEST = "id:org.wikipedia:id/search_src_text";
         SEARCH_CANCEL_BUTTON = "xpath://XCUIElementTypeButton[@name='Clear text']";

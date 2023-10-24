@@ -2,19 +2,20 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
+import lib.Platform;
 
-public class ArticlePageObject extends MainPageObject{
-    private static final String
-
-            TITLE = "xpath://*[contains(@text, 'Appium')]",
-            FOOTER_ELEMENT = "xpath://*[@text='View article in browser']",
-            SUBTITLE ="id:pcs-edit-section-title-description",
-            SAVE_TAB = "xpath://android.widget.TextView[@content-desc='Save']",
-            ADD_TO_LIST_LABEL = "id:org.wikipedia:id/snackbar_action",
-            MY_LIST_NAME_INPUT = "id:org.wikipedia:id/text_input",
-            MY_LIST_OK_BUTTON = "xpath://*[@text='OK']",
-            ARTICLE_BACK_BUTTON = "xpath://*[@content-desc='Navigate up']",
-            ARTICLE_LIST_BACK_BUTTON = "xpath://*[@resource-id='org.wikipedia:id/search_toolbar']//*[contains(@content-desc,'Navigate up')]";
+abstract public class ArticlePageObject extends MainPageObject
+{
+    protected static String
+            TITLE,
+            FOOTER_ELEMENT ,
+            SUBTITLE ,
+            SAVE_TAB ,
+            ADD_TO_LIST_LABEL ,
+            MY_LIST_NAME_INPUT,
+            MY_LIST_OK_BUTTON ,
+            ARTICLE_BACK_BUTTON ,
+            ARTICLE_LIST_BACK_BUTTON;
 
     public ArticlePageObject(AppiumDriver driver) {
         super(driver);
@@ -27,7 +28,12 @@ public class ArticlePageObject extends MainPageObject{
     public String getArticleSubtitle()
     {
         WebElement subtitle_element = waitForSubtitleElement();
-        return subtitle_element.getAttribute("text");
+        if (Platform.getInstance().isAndroid()){
+            return subtitle_element.getAttribute("text");
+        } else {
+            return subtitle_element.getAttribute("name");
+        }
+
 
     }
     public void waitForTitleElement()
@@ -37,11 +43,18 @@ public class ArticlePageObject extends MainPageObject{
 
     public void swipeToFooter()
     {
-        this.swipeUpToFindElement(
-                FOOTER_ELEMENT,
-                "Cannot find the end of the article",
-                20
-        );
+        if (Platform.getInstance().isAndroid()){
+            this.swipeUpToFindElement(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end of the article",
+                    40
+            );
+        } else {
+            this.swipeUpTillElementAppear(FOOTER_ELEMENT,
+                    "Cannot find the end of the article",
+                    40);
+        }
+
     }
     public void addArticleToMyList(String name_of_folder)
     {
